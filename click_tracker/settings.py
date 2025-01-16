@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-jd_#7em#5=$=7_1(u++7l1w10*+0t+@$e6#9hw_7y2-k(4s*8*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://gradecounter.onrender.com/"]
 
 
 # Application definition
@@ -139,5 +139,6 @@ import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(default='sqlite:///db.sqlite3')
 }
+
 
 
