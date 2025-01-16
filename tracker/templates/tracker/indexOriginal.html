@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button.primary {
+            background-color: #007bff;
+            color: white;
+        }
+        button.primary:hover {
+            background-color: #0056b3;
+        }
+        button.warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        button.warning:hover {
+            background-color: #e0a800;
+        }
+        button.danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        button.danger:hover {
+            background-color: #c82333;
+        }
+        #message {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .alert {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Click Tracker</h1>
+        <div id="buttons">
+            {% for button in buttons %}
+                <button class="primary" onclick="incrementClick('{{ button }}')">{{ button }}</button>
+            {% endfor %}
+        </div>
+        <div style="text-align: center;">
+            <button class="warning" onclick="undoLastClick()">Undo Last Click</button>
+            <button class="danger" onclick="clearAll()">Clear All</button>
+        </div>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        function incrementClick(label) {
+            const csrfToken = '{{ csrf_token }}';
+            const data = new FormData();
+            data.append('label', label);
+            data.append('csrfmiddlewaretoken', csrfToken);
+
+            fetch('/increment_click/', {
+                method: 'POST',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('message');
+                messageDiv.innerHTML = `<div class="alert alert-success">${label} count: ${data.count}</div>`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function undoLastClick() {
+            const csrfToken = '{{ csrf_token }}';
+            const data = new FormData();
+            data.append('csrfmiddlewaretoken', csrfToken);
+
+            fetch('/undo_last_click/', {
+                method: 'POST',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('message');
+                if (data.error) {
+                    messageDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                } else {
+                    messageDiv.innerHTML = `<div class="alert alert-success">Undo successful! ${data.label} count: ${data.count}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function clearAll() {
+            const csrfToken = '{{ csrf_token }}';
+            const data = new FormData();
+            data.append('csrfmiddlewaretoken', csrfToken);
+
+            fetch('/clear_all/', {
+                method: 'POST',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('message');
+                if (data.success) {
+                    messageDiv.innerHTML = `<div class="alert alert-success">${data.success}</div>`;
+                } else {
+                    messageDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
+
