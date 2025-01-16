@@ -1,2 +1,2 @@
-web: gunicorn myproject.wsgi:application
+web: gunicorn click_tracker.wsgi:application
 
