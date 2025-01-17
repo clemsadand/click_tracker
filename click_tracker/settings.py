@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import dj_database_url
 import os
-from secret_key import SECRET_KEY_LOCAL
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,13 +22,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY_RENDER", SECRET_KEY_LOCAL)
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["https://gradecounter.onrender.com/"]
+# SECURITY WARNING: keep the secret key used in production secret!
+
+if DEBUG:
+	from secret_key import SECRET_KEY_LOCAL
+	SECRET_KEY = SECRET_KEY_LOCAL
+else:
+	SECRET_KEY = os.environ.get("SECRET_KEY_RENDER")
+
+#ALLOWED_HOSTS = ["https://gradecounter.onrender.com/"]
 
 
 # Application definition
