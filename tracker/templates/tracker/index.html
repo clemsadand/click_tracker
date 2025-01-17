@@ -77,6 +77,12 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+        .total-counts{
+        	text-align: center;
+        }
+        .number{
+        	font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -90,6 +96,10 @@
         <div style="text-align: center;">
             <button class="warning" onclick="undoLastClick()">Undo Last Click</button>
             <button class="warning" onclick="clearAll()">Clear All</button>
+        </div>
+        <div class="total-counts">
+        	<div class="Number">{{ total_counts }}</div>
+        	<h3>Number of Grades</h3>
         </div>
         <div id="message"></div>
         <h2 style="text-align: center;">Distribution of Grades</h2>
@@ -150,7 +160,13 @@
 
         function fetchChartData() {
             fetch('/get_chart_data/')
-                .then(response => response.json())
+                .then(response => 
+									{
+									if (!response.ok) {
+										  throw new Error(`HTTP error! status: ${response.status}`);
+									}
+									return response.json();}
+                )
                 .then(data => renderChart(data))
                 .catch(error => console.error('Error fetching chart data:', error));
         }
