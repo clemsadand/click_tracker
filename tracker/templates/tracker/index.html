@@ -95,7 +95,8 @@
         <h2 style="text-align: center;">Distribution of Grades</h2>
         <canvas id="clickChart" width="400" height="200"></canvas>
     </div>
-
+{% block extrascripts %}
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Fetch initial chart data and render chart
@@ -222,6 +223,7 @@
         // Initialize chart on page load
         document.addEventListener('DOMContentLoaded', fetchChartData);
     </script>
+{% endblock %}
 </body>
 </html>
 
