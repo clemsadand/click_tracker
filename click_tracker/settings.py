@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-jd_#7em#5=$=7_1(u++7l1w10*+0t+@$e6#9hw_7y2-k(4s*8*"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ["https://gradecounter.onrender.com/"]
 
@@ -75,12 +76,18 @@ WSGI_APPLICATION = "click_tracker.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+if DEBUG:
+	DATABASES = {
+		  "default": {
+		      "ENGINE": "django.db.backends.sqlite3",
+		      "NAME": BASE_DIR / "db.sqlite3",
+		  }
+	}
+else:
+	DATABASES = {
+		  'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+	}
+
 
 
 # Password validation
@@ -130,15 +137,12 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # FOR DEPLOYING
 #DEBUG = False
-ALLOWED_HOSTS = ['*']  # Update this later to include your domain or Render URL
+ALLOWED_HOSTS = ['127.0.0.1', "localhost", "gradecounter.onrender.com"]  # Update this later to include your domain or Render URL
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 #****************
-import dj_database_url
 
-DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
-}
+
 
 
 
